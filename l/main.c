@@ -16,19 +16,15 @@ void List() {
 }
 
 void Add() {
-    char * output = strcat(args[2],"\n");
+    char * output = strcat(args[2],"␇\n");
     fwrite(output, 1, strlen(output), fp);
 }
 
 void Remove() {
-    fseek(fp, 0L, SEEK_END);
-    char output[ftell(fp)];
-    rewind(fp);
-
-    args[2] = strcat(args[2], "\n");
-    int len = strlen(args[2]);
+    char * output;
     unsigned char hit = 0;
-    int i = 0;
+    int len = strlen(args[2]);
+    int i = 0, x = len+1;
 
     for ( ; !feof(fp); ++i ) {
        
@@ -37,22 +33,28 @@ void Remove() {
         if ( c == args[2][hit] ) hit++;
         else hit = 0;
 
-        if (hit == len) {
-            printf("i: %d, Text: %s\n", i, output);
-            i -= hit;
-            hit = 0;
+        printf("%d\n", i);
+
+        if ( hit == len && x > 0)
+            output[ i-- - x-- ] = c;
+        else{
+            output = realloc(output, i);
+            strncat(output, &c, 1);
         }
 
-        output[i] = c;
+        // printf("%c", c);
     }
     
+    printf("\n\n%s", output);
+
     remove("test.txt");
-    fp = fopen("test.txt", "w+");
-    fwrite(output, 1, i-1, fp);
+    fp = fopen("test.txt", "w");
+    fwrite(output, 1, i, fp);
+    free(output);
 }
 
 void Help(){ 
-    printf(" list -> list leaderboards,\n add -> add [target] | use \" \" for words with spaces\n remove -> remove [target] | Same rules as adding\n"); 
+    printf("I'm helping\n"); 
 }
 
 // NOTE: Without the parameter brackets, it's apparently not either a function pointer or a pointer, interesting

@@ -1,5 +1,3 @@
-blue
 red
-black
 green
-grey
+yellow
