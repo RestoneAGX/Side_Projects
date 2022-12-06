@@ -6,11 +6,9 @@
 
 int arg_count;
 char** args;
-
 FILE *fp;
 
 void List() {
-    printf("\nStarting...\n");
     while ( !feof(fp) )
         printf("%c", (char) fgetc(fp));
 }
@@ -33,15 +31,13 @@ void Remove() {
     for ( ; !feof(fp); ++i ) {
        
         char c = fgetc(fp);
+        
+        unsigned char cond = (c == args[2][hit]);
+        hit = (hit + cond) * cond;
 
-        if ( c == args[2][hit] ) hit++;
-        else hit = 0;
-
-        if (hit == len) {
-            printf("i: %d, Text: %s\n", i, output);
-            i -= hit;
-            hit = 0;
-        }
+        unsigned char len_temp = (hit == len);
+        i -= hit * len_temp;
+        hit *= !len_temp;
 
         output[i] = c;
     }
@@ -52,7 +48,7 @@ void Remove() {
 }
 
 void Help(){ 
-    printf(" list -> list leaderboards,\n add -> add [target] | use \" \" for words with spaces\n remove -> remove [target] | Same rules as adding\n"); 
+    printf(" list -> list leaderboards,\n add -> add [target],\n remove -> remove [target]\n | use \" \" for words with spaces |\n"); 
 }
 
 // NOTE: Without the parameter brackets, it's apparently not either a function pointer or a pointer, interesting
@@ -68,14 +64,12 @@ int main(int argc, char ** argv){
     int ix = (argc > 1);
     int point = (argv[ix][0] == 'l') + 
               ( (argv[ix][0] == 'a' && argc > 2 ) * 2 ) +
-              ( (argv[ix][0] == 'r' ) * 3 );
+              ( (argv[ix][0] == 'r' && argc > 2 ) * 3 );
     
     fp = fopen("test.txt", perm_opts[(point == 2)]); 
     
     (*funcs[point])();
     
-    printf("ix: %d, cmd: %d\n", ix, point);
-
     // float starting = (float) clock()/CLOCKS_PER_SEC;
     // printf("%f\n", ( (float) clock()/CLOCKS_PER_SEC ) - starting);
     

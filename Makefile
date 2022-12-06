@@ -1,8 +1,9 @@
-.PHONY: all clean
+.PHONY: all test clean
 all:
 	gcc -o main main.c -O3 -Wall -Wunused
 
 test:
-	./run.bash`
+	./run.bash
+
 clean:
-	rm -r main test.txt #test
+	rm -r main test.txt 
