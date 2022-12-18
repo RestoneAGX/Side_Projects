@@ -45,7 +45,6 @@ void Remove() {
     fclose(fp);
     fp = fopen("test.txt", "w+");
     fwrite(output, 1, i-1, fp);
-    fclose(fp);
 }
 
 void Help(){ 
@@ -71,6 +70,8 @@ int main(int argc, char ** argv){
     
     (*funcs[point])();
     
+    fclose(fd); 
+
     // float starting = (float) clock()/CLOCKS_PER_SEC;
     // printf("%f\n", ( (float) clock()/CLOCKS_PER_SEC ) - starting);
     
