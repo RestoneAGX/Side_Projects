@@ -41,10 +41,11 @@ void Remove() {
 
         output[i] = c;
     }
-    
-    remove("test.txt");
+
+    fclose(fp);
     fp = fopen("test.txt", "w+");
     fwrite(output, 1, i-1, fp);
+    fclose(fp);
 }
 
 void Help(){ 
