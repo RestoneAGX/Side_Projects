@@ -32,6 +32,7 @@ int main(int argc, char** argv){
         if (c == '\n') {
             last_newline = i;
             if (generate_num == 1){
+                // write to stdout and say the word
                 fwrite
             }
         }
