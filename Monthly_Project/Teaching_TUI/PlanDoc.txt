@@ -1,0 +1,35 @@
+Model:
+    text
+    Button
+    Input field
+
+Lesson:
+    What is C, its uses, and how to set it up on all platforms?
+    Variables
+    Pointers
+    Arithmatic
+    Conditions {==, !=, &&, ||, !, truey & falsey}
+    Bitwise Operatons { &, |, ^, ~, >>, << }
+    Loops {for, while}
+    Arrays {single and multi-diminsional, plus some syntactic sugar}
+    Structs
+    Unions
+    functions {recursion, nested functions, callback, arguments, parameter}
+
+    Dynamic Memory Allocation
+    Memory Allocation / Strings
+    File Handling
+    Preprocessor {#Define, IfDefs, Pragma, }
+    Libraries {glibc, external libs}
+    Building {Make, CMake}
+    I Don't Know Where to put these { type casting, enums, ternary, Bit-fields in structs, goto}
+
+Higher Level:
+    Paradigm
+    Branchless
+    Abstraction
+
+Lower Level:
+    Physical hardware {RAM, CPU, DISK, GPU, I/O}
+    Registers
+    Assembly
