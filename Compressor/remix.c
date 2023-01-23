@@ -30,7 +30,6 @@ int main(int argc, char** argv){
                 // if (count == 1)
                 memcpy(numBuffer, slider+idx-count, count);
                 numBuffer[count+1] = 0;
-                
                 int x = (isFloat) ? atof(numBuffer) : atoi(numBuffer); 
             }
             count++;
