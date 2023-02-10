@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 
+void Phase1(){
+    
+}
+
+void Phase2(){
+
+}
+
 int main(int argc, char** argv){
     if (argc < 2) return -1;
     FILE *fp = fopen(argv[2], "r+");
@@ -28,14 +36,18 @@ int main(int argc, char** argv){
             if (c == '.') isFloat = 1;
             else if (c == ' '){
                 // if (count == 1)
+                has_space = 0;
                 memcpy(numBuffer, slider+idx-count, count);
                 numBuffer[count+1] = 0;
-                int x = (isFloat) ? atof(numBuffer) : atoi(numBuffer); 
+                int x = (isFloat) ? atof(numBuffer) : atoi(numBuffer);
+                int x_size = (isFloat) ? 
+                // estimate size of val, based on conversion
+                // write over the line memory
+                memcpy(slider[idx-count], , );
             }
             count++;
         }
-        
-        space_idx = idx;
+        if (c == ' ') has_space = 1;
 
         // check space, if new space check UNTIL space again
         // if 2 spaces found or space until \n

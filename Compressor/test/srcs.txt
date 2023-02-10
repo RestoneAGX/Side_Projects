@@ -1,0 +1,5 @@
+https://stackoverflow.com/questions/3026441/float32-to-float16
+https://en.wikipedia.org/wiki/Half-precision_floating-point_format
+https://people.computing.clemson.edu/~dhouse/courses/405/docs/brief-obj-file-format.pdf
+https://en.wikipedia.org/wiki/Minifloat
+https://stackoverflow.com/questions/18691199/floating-point-conversion-for-8-bit-floating-point-numbers

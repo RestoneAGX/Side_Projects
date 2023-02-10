@@ -1,5 +1,13 @@
 #include <stdio.h>
 
+void phase1(){
+    
+}
+
+void phase2(){
+
+}
+
 int main(int argc, char** argv){
     if (argc < 2) return -1;
 
