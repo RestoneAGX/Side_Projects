@@ -1,13 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
-void Phase1(){
-    
-}
-
-void Phase2(){
-
-}
+#include <stdlib.h>
 
 int main(int argc, char** argv){
     if (argc < 2) return -1;
@@ -39,11 +32,11 @@ int main(int argc, char** argv){
                 has_space = 0;
                 memcpy(numBuffer, slider+idx-count, count);
                 numBuffer[count+1] = 0;
-                int x = (isFloat) ? atof(numBuffer) : atoi(numBuffer);
-                int x_size = (isFloat) ? 
+                unsigned int x = (isFloat) ? atof(numBuffer) : atoi(numBuffer);
+                int x_size = (isFloat) ? 4 : (x >= 127) + 1; 
                 // estimate size of val, based on conversion
                 // write over the line memory
-                memcpy(slider[idx-count], , );
+                memcpy(slider+(idx-count), &numBuffer, x_size);
             }
             count++;
         }
