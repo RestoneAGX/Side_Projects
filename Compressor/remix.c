@@ -7,12 +7,7 @@
 FILE *fp;
 FILE *outputFP;
 
-int main(int argc, char** argv){
-    if (argc < 2) return -1;
-
-    fp = fopen(argv[1], "r+");
-    outputFP = fopen("output.Robj","w");
-    
+int ProcessData(int Phase){
     char slider[SLIDER_LEN];
     unsigned char skipping;
 
@@ -22,8 +17,8 @@ int main(int argc, char** argv){
 
     unsigned char idx = 0;
 
-    // Phase 1 | TODO: Wrap into a function
-    while (!feof(fp)){
+    if (Phase){ // Phase 1 Processing
+        while (!feof(fp)){
         slider[idx] = fgetc(fp);
         if (slider[idx] == '#') skipping = 1;  // if # -> skip UNTIL '\n'
         else if (skipping && slider[idx] == '\n' || slider[idx] < 1 || (int)idx == SLIDER_LEN){
@@ -44,8 +39,7 @@ int main(int argc, char** argv){
                 printf("word: %s, ", slider+idx-count);
 
                 if (isFloat) {
-                    // TODO: Add float16 conversion
-                    float x = atof(slider+idx-count);
+                    float x = atof(slider+idx-count); // TODO: Add float16 conversion
                     memcpy(slider+idx-count, &x, x_size);
                 } else {
                     int x = atoi(slider+idx-count);
@@ -53,9 +47,8 @@ int main(int argc, char** argv){
                     memcpy(slider+idx-count, &x, x_size);
                 }
 
-                // idx -= count - (x_size - 1);
-                // idx += -count + x_size + 1;
-                printf("count: %d idx_char: %c\n", count, slider[idx-count+x_size+2]);
+                idx -= count - x_size;
+                printf("count: %d idx_char: %c\n", count, slider[idx]);
                 slider[idx] = original_char;
 
                 has_space = 0;
@@ -66,8 +59,19 @@ int main(int argc, char** argv){
         }
         if (slider[idx++] == ' ') has_space = 1;
     }
+    }else{      // Phase 2 Processing | TODO: Implement Phase 2 Processing
+    }
+}
 
-    // TODO: Phase 2
+int main(int argc, char** argv){
+    if (argc < 2) return -1;
+
+    fp = fopen(argv[1], "r+");
+    outputFP = fopen("tempOutput.Robj","w");
+
+    ProcessData(1); // Phase 1
+
+    ProcessData(0); // Phase 2
 
     fclose(fp);
     fclose(outputFP);
