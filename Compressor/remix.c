@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define SLIDER_LEN 50
+#define SLIDER_LEN 0xFF
 
 FILE *fp;
 FILE *outputFP;
@@ -19,7 +19,6 @@ int main(int argc, char** argv){
     unsigned char has_space = 0;
     unsigned char count;
     unsigned char isFloat;
-    unsigned char numBuffer[10];
 
     unsigned char idx = 0;
 
@@ -27,7 +26,7 @@ int main(int argc, char** argv){
     while (!feof(fp)){
         slider[idx] = fgetc(fp);
         if (slider[idx] == '#') skipping = 1;  // if # -> skip UNTIL '\n'
-        else if (slider[idx] == '\n' || slider[idx] < 1 || idx == SLIDER_LEN){
+        else if (skipping && slider[idx] == '\n' || slider[idx] < 1 || (int)idx == SLIDER_LEN){
             fwrite(slider, idx, 1, outputFP);
             has_space = 0;
             skipping = 0;
@@ -38,10 +37,7 @@ int main(int argc, char** argv){
         if (has_space){
             if (slider[idx] == '.') isFloat = 1;  // isFloat = (c == '.') ^ isFloat
             else if (slider[idx] == ' ' || slider[idx] == '\n'){
-                // if (count == 1)
-                // memcpy(numBuffer, &slider[idx-count], count);
-                // numBuffer[count+1] = 0;
-                
+                char original_char = slider[idx];
                 slider[idx] = 0;
                 int x_size = 4;
 
@@ -59,9 +55,10 @@ int main(int argc, char** argv){
 
                 // idx -= count - (x_size - 1);
                 // idx += -count + x_size + 1;
-                printf("count: %d\n", count);
-                slider[idx] = ' ';
+                printf("count: %d idx_char: %c\n", count, slider[idx-count+x_size+2]);
+                slider[idx] = original_char;
 
+                has_space = 0;
                 isFloat = 0;
                 count = -1;
             }
