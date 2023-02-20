@@ -1,6 +1,6 @@
 all:
-	gcc -o compressor remix.c -O3
+	gcc -o compressor BSide.c -O3
 	./compressor test/lamp.obj
 	
 clean:
-	rm -r output.Robj
+	rm -r output.Robj tempOutput.Robj

@@ -23,31 +23,30 @@ void ProcessData(int phase){
                 break;
                 case '.': isFloat = 1;
                 case ' ':
-                    if (!hasSpace){
+                    if (hasSpace){
+                        conversions:
+                        // if(slider[idx-count] > 57) goto Clean_Line;
+                        char ogChar = slider[idx];
+                        int x_size = 4;
+                        slider[idx] = 0;
+                        
+                        if (isFloat) {
+                            float x = atof(slider+idx-count);
+                            memcpy(slider+idx-count, &x, x_size);
+                        }else{
+                            int x = atoi(slider+idx-count);
+                            x_size = (x > 127) + 1;
+                            memcpy(slider+idx-count, &x, x_size);
+                        }
+                        
+                        if (ogChar == '\n') goto Clean_Line;
+                        idx -= count - x_size;
+                        slider[idx] = ' ';
+                        hasSpace = 0;
+                        isFloat = 0;
+                    }else{
                         hasSpace = 1;
                         count = 0;
-                    } else{ 
-                        conversions:
-                        if(slider[idx-count] < 65){
-                            int x_size = 4;
-                            slider[idx] = 0;
-                            
-                            if (isFloat) {
-                                float x = atof(slider+idx-count);
-                                memcpy(slider+idx-count, &x, x_size);
-                            }else{
-                                int x = atoi(slider+idx-count);
-                                x_size = (x > 127) + 1;
-                                memcpy(slider+idx-count, &x, x_size);
-                            }
-                            
-                            if (ogChar == '\n') goto Clean_Line;
-                            idx -= count - x_size;
-                            slider[idx] = ' ';
-                            has_space = 0;
-                            isFloat = 0;
-                            break;
-                        }
                     }
                 break;
                 case '\n':
@@ -68,7 +67,18 @@ void ProcessData(int phase){
     else{} // Phase 2 Processing | TODO: Implement Phase 2
 }
 
-int main(){
+int main(int argc, char** argv){
+    if (argc < 2) return -1;
+
+    fp = fopen(argv[1], "r+");
+    outputFP = fopen("tempOutput.Robj","w");
+
+    ProcessData(1); // Phase 1
+
+    ProcessData(0); // Phase 2
+
+    fclose(fp);
+    fclose(outputFP);
 
     return 0;
 }
