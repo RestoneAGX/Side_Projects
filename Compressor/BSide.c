@@ -23,9 +23,9 @@ void ProcessData(int phase){
                 break;
                 case '.': isFloat = 1;
                 case ' ':
+                    conversions: 
                     if (hasSpace){
-                        conversions:
-                        // if(slider[idx-count] > 57) goto Clean_Line;
+                        //if(slider[idx-count] > 57) goto Clean_Line;
                         char ogChar = slider[idx];
                         int x_size = 4;
                         slider[idx] = 0;
