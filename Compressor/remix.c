@@ -26,8 +26,10 @@ void ProcessData(int Phase){
             }
 
             if (slider[idx] == ' ' || slider[idx] == '\n'){
-                if (!has_space)  has_space = 1;
-                else {
+                if (!has_space && slider[idx] == ' '){
+                    has_space = 1;
+                    count = 0;
+                } else {
                     char original_char = slider[idx];
                     slider[idx] = 0;
                     int x_size = 4;
@@ -44,15 +46,15 @@ void ProcessData(int Phase){
                     }
 
                     idx -= count - x_size;
-                    printf("count: %d idx_char: %c\n", count, slider[idx]);
+                    printf("count: %d idx_char: %c idx: %d\n", count, slider[idx], idx);
                     slider[idx] = original_char;
 
-                    has_space = 0;
                     count = 0;
                 }
                 if (slider[idx] == '\n'){
-                    fwrite(slider, 1, idx, outputFP);
+                    fwrite(slider, 1, idx+1, outputFP);
                     idx = 0;
+                    has_space = 0;
                     continue;
                 }
             } else count++;
