@@ -9,7 +9,7 @@ FILE *outputFP;
 
 void ProcessData(int Phase){
     char slider[SLIDER_LEN];
-    unsigned char skipping;
+    unsigned char skipping = 0;
 
     unsigned char has_space = 0;
     unsigned char count;
@@ -19,6 +19,7 @@ void ProcessData(int Phase){
     if (Phase){ // Phase 1 Processing
         while (!feof(fp)){
             slider[idx] = fgetc(fp);
+            
             if (slider[idx] == '#') skipping = 1;
             if (skipping){
                 skipping = slider[idx] != '\n';
