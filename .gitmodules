@@ -1,3 +1,6 @@
 [submodule "The-Gardener"]
 	path = The-Gardener
 	url = https://github.com/RestoneAGX/The-Gardener
+[submodule "MonkeyGame/libs"]
+	path = MonkeyGame/libs
+	url = https://github.com/michal-z/zig-gamedev/
