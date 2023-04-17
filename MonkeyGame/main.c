@@ -20,11 +20,17 @@ int main(int argc, char** argv){
         return printf("Error Creating Renderer: %s\n", SDL_GetError());
     }
 
+    loadTextures();
+
+    int pInput[] = {0,0};
     int gameActive = 1;
     SDL_Event event;
 
     while (gameActive){
-        handleInput(&gameActive, &event);
+        handleInput(&gameActive, &event, pInput);
+        renderWorld(renderer);
     }
+
+    SDL_DestroyTexture(atlas);
     return 0;
 }
