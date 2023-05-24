@@ -1,17 +1,31 @@
 #include<SDL2/SDL.h>
 
-// Components
-#define HP 0
-#define ANIMATION 1
-#define FLIPPED 2
-#define DAMAGE 3
-#define GRAVITY 4
+enum Components{
+    HP,
+    ANIMATION,
+    FLIPPED,
+    DAMAGE,
+    SPEED,
+    GRAVITY,
+};
 
-// Animation Types
-#define IDLE 0
-#define SHIELD 1
-#define ATK 2
-#define SHOOTING 3
+enum AnimationTypes{
+    IDLE,
+    SHEILD,
+    SHOOTING,
+    ATK,
+    SPECIAL,
+};
+
+enum Entities{
+    plr,
+    DK,
+    Kranky,
+    Leo,
+    Drake,
+    Banana,
+    Kɔbe
+};
 
 // Tools
 #define bounds_check(pos1,pos2)( !(pos1.x < pos2.x || pos1.x + pos1.w > pos2.x + pos2.w || pos1.y < pos2.y ||  pos1.y + pos1.h > pos2.y + pos2.h) )
@@ -22,16 +36,16 @@
 
 typedef struct Entity{
     unsigned char id;
-    unsigned char components[5];
+    char components[6];
     SDL_Rect* src;
     SDL_FRect pos;
 }Entity;
 
 // 0 plr, 1 boss, others projectiles
-int current_world_size = 2;
+int current_world_size = 1;
 
 Entity world[20] = {
-    (Entity){0, {}},
+    (Entity){plr, {}},
 };
 
 Entity presets[19] = {
@@ -41,10 +55,12 @@ SDL_Texture *atlas;
 
 int gravity = 10;
 
-void Shoot(int idx){
+void Shoot(int caller, int idx){
+    world[caller].components[ANIMATION] = SHOOTING;
     world[current_world_size] = presets[idx-1];
-    world[current_world_size].pos = world[0].pos;
-    world[current_world_size++].pos.x += world[0].components[0] * 5;
+    world[current_world_size].pos = world[caller].pos;
+    world[current_world_size].components[FLIPPED] = world[caller].components[FLIPPED];
+    world[current_world_size++].pos.x += world[caller].components[FLIPPED] * 5;
 }
 
 void loadTextures(SDL_Renderer* renderer){
@@ -63,28 +79,29 @@ void handleInput(SDL_Event *event, int* gameActive, int* input){
 
             case SDL_MOUSEBUTTONDOWN:
                 if (event->button.button == SDL_BUTTON_LEFT)
-                    Shoot(2);
+                    Shoot(plr, Kɔbe);
                 else
-                    world[0].components[ANIMATION] = 1;
+                    world[plr].components[ANIMATION] = SHEILD;
                 break;
             
             case SDL_MOUSEBUTTONUP:
-                if (event->button.button == SDL_BUTTON_RIGHT){
-                    world[0].components[ANIMATION] = 0;
-                }
+                if (event->button.button == SDL_BUTTON_RIGHT)
+                    world[plr].components[ANIMATION] = IDLE;
                 break;
 
             case SDL_KEYDOWN:
                 switch(event->key.keysym.scancode){
                     case SDL_SCANCODE_A: input[0] = 1;
+                         world[plr].components[FLIPPED] = -1;
                     break;
                     case SDL_SCANCODE_D: input[0] = -1;
+                         world[plr].components[FLIPPED] = 1;
                     break;
                     case SDL_SCANCODE_W: input[1] = 1;
                     break;
                     case SDL_SCANCODE_S: input[1] = -1;
                     break;
-                    case SDL_SCANCODE_SPACE: Shoot(3); // Banana Peel
+                    case SDL_SCANCODE_SPACE: Shoot(plr, Banana);
                     break;
                     default: break;
                 }
@@ -106,7 +123,12 @@ void handleInput(SDL_Event *event, int* gameActive, int* input){
     }
 }
 
-void renderWorld(SDL_Renderer* renderer){
+void handlePlayerMovement(int* input){
+    world[plr].pos.x += input[0] * 5;
+    world[plr].pos.y += input[1] * 5;
+}
+
+void RenderWorld(SDL_Renderer* renderer){
     // TODO: Render background
     for (int i = 0; i < current_world_size; i++){
         world[i].src->x += world[i].id + world[i].components[ANIMATION]; 
@@ -114,9 +136,35 @@ void renderWorld(SDL_Renderer* renderer){
     }
 }
 
+void handleAI(int caller){
+    switch(world[caller].id){
+        case DK:
+            break;
+        case Kranky:
+            break;
+        case Leo:
+            break;
+        case Drake:
+            break;
+        case Banana: // TODO: add slippage/stun
+            break;
+    }
+}
+
+void Die(int idx){
+    switch(world[idx].id){
+        case plr: //TODO: GameOver // 0 is the Player
+            break;
+        // cases 1-5 are bosses
+        default: world[current_world_size--] = world[idx]; // These are normally used for projectiles and particle FX
+            break;
+    }
+}
+
 void UpdateWorld(){
     for (int i = 0; i < current_world_size; i++){
-        world[i].pos.y -= (world[i].components[GRAVITY]) ? gravity : 0;
+        world[i].pos.y -= (world[i].components[GRAVITY]) * gravity;
+        world[i].pos.x += (world[i].id > 0) * world[i].components[SPEED] * world[i].components[FLIPPED];
 
         // Handle Collision
         if (world[i].pos.x < 0)                  world[i].pos.x = 0;
@@ -124,10 +172,14 @@ void UpdateWorld(){
         if (world[i].pos.y < 0)                  world[i].pos.y = 0;
         if (world[i].pos.y > 680 - world[i].pos.h)  world[i].pos.y = 680 - world[i].pos.h; // Screen width
 
-        // Handle Combat
+        handleAI(i);
+
+        // Handle Damage
         for (int x = i+1; x < current_world_size; i++){
-            if ( bounds_check(world[i].pos, world[x].pos) && world[x].components[ANIMATION] == ATK && world[i].components[ANIMATION] != SHIELD )
+            if ( bounds_check(world[i].pos, world[x].pos) && world[x].components[ANIMATION] == ATK && world[i].components[ANIMATION] != SHEILD ){
                 world[i].components[HP] -= world[x].components[DAMAGE];
+                if (world[i].components[HP] < 0) Die(i);
+            }
         }
     }
 }

@@ -26,10 +26,10 @@ win:
 	clang -o Monkey main.c $(ARGS) --target=x86_64-w64-mingw32 --sysroot=$(WIN_CHAIN) -fuse-ld=lld -lSDL2main -lSDL2
 
 	
-test: _test.c
+test: test_
 main: monkey_
 clean:
-	$(KILL) _main _test Monkey.exe
+	$(KILL) monkey_ test_ Monkey.exe
 
 # platformer: ./example/platformer
 

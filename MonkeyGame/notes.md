@@ -13,7 +13,7 @@
 
 # Movesets:
 
-## Donkey Knong
+## Donkey Kong
 - Rolling
 - Double Barrel Shotgun
 - Ground Pound
@@ -22,7 +22,6 @@
 - Cane throw
 - Footstool
 - Parring
-- Cane guns
 + Kart (driving on the ground)
 
 ## Leo Luster
