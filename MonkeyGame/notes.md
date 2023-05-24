@@ -6,10 +6,10 @@
 - [ ] Leo Luster
 
 # Control Scheme:
-WASD -> Movement
-Left-Click -> Kobetoɔ
-Right-Click -> Shield (parrying)
-Space -> Banana Peel
+[T] WASD -> Movement
+[T] Left-Click -> Kobetoɔ
+[T] Right-Click -> Shield (parrying)
+[T] Space -> Banana Peel
 
 # Movesets:
 

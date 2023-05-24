@@ -22,7 +22,7 @@ int main(int argc, char** argv){
 
     loadTextures();
 
-    int pInput[] = {0,0};
+    int pInput[] = {0,0,0,0};
     int gameActive = 1;
     SDL_Event event;
 
