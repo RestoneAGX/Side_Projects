@@ -23,7 +23,7 @@
 typedef struct Entity{
     unsigned char id;
     unsigned char components[5];
-    SDl_Rect* src;
+    SDL_Rect* src;
     SDL_FRect pos;
 }Entity;
 
@@ -41,7 +41,21 @@ SDL_Texture *atlas;
 
 int gravity = 10;
 
-void handleInput(SDL_Event *event, int* gameActive, int* input, Entity* world){
+void Shoot(int idx){
+    world[current_world_size] = presets[idx-1];
+    world[current_world_size].pos = world[0].pos;
+    world[current_world_size++].pos.x += world[0].components[0] * 5;
+}
+
+void loadTextures(SDL_Renderer* renderer){
+    SDL_Surface* preop = SDL_LoadBMP("./atlas.bmp");
+    SDL_Surface* oped = SDL_ConvertSurface(preop, preop->format, 0);
+    atlas = SDL_CreateTextureFromSurface(renderer, oped);
+    SDL_FreeSurface(preop);
+    SDL_FreeSurface(oped); 
+}
+
+void handleInput(SDL_Event *event, int* gameActive, int* input){
     while(SDL_PollEvent(event)){
         switch(event->type){
             case SDL_QUIT: *gameActive = 0;
@@ -61,7 +75,7 @@ void handleInput(SDL_Event *event, int* gameActive, int* input, Entity* world){
                 break;
 
             case SDL_KEYDOWN:
-                switch(event->key.keysm.scancode){
+                switch(event->key.keysym.scancode){
                     case SDL_SCANCODE_A: input[0] = 1;
                     break;
                     case SDL_SCANCODE_D: input[0] = -1;
@@ -72,10 +86,11 @@ void handleInput(SDL_Event *event, int* gameActive, int* input, Entity* world){
                     break;
                     case SDL_SCANCODE_SPACE: Shoot(3); // Banana Peel
                     break;
+                    default: break;
                 }
             break;
             case SDL_KEYUP:
-                switch(event->key.keysm.scancode){
+                switch(event->key.keysym.scancode){
                     case SDL_SCANCODE_A: input[0] = 0;
                     break;
                     case SDL_SCANCODE_D: input[0] = 0;
@@ -84,21 +99,24 @@ void handleInput(SDL_Event *event, int* gameActive, int* input, Entity* world){
                     break;
                     case SDL_SCANCODE_S: input[1] = 0;
                     break;
+                    default: break;
                 }
             break;
         }
     }
 }
 
-void renderWorld(SDL_Renderer* renderer,Entity *world){
+void renderWorld(SDL_Renderer* renderer){
     // TODO: Render background
-    for (int i = 0; i < current_world_size; i++)
-        SDL_RenderCopyEx(renderer, atlas[world[i].id + world[i].components[ANIMATION]], world[i].src, &world[i].pos, 0, NULL, SDL_FLIP_HORIZONTAL * world[i].components[FLIPPED]);
+    for (int i = 0; i < current_world_size; i++){
+        world[i].src->x += world[i].id + world[i].components[ANIMATION]; 
+        SDL_RenderCopyExF(renderer, atlas, world[i].src, &world[i].pos, 0, NULL, SDL_FLIP_HORIZONTAL * world[i].components[FLIPPED]);
+    }
 }
 
-void UpdateWorld(Entity* world){
+void UpdateWorld(){
     for (int i = 0; i < current_world_size; i++){
-        world[i].pos -= (world[i].components[GRAVITY]) ? gravity : 0;
+        world[i].pos.y -= (world[i].components[GRAVITY]) ? gravity : 0;
 
         // Handle Collision
         if (world[i].pos.x < 0)                  world[i].pos.x = 0;
@@ -112,24 +130,4 @@ void UpdateWorld(Entity* world){
                 world[i].components[HP] -= world[x].components[DAMAGE];
         }
     }
-}
-
-void handleCombat(Entity* world){
-   for (int i = 0; i < current_world_size; i++){
-        if (world[i].components[ANIMATION] == )
-   } 
-}
-
-void Shoot(int idx){
-    world[current_world_size] = presets[idx-1];
-    world[current_world_size].pos = world[0].pos;
-    world[current_world_size++].pos.x += world[0].components[0] * 5;
-}
-
-void loadTexture(SDL_Renderer* renderer){
-    SDL_Surface* preop = SDL_LoadBMP("./atlas.bmp");
-    SDL_Surface* oped = SDL_ConvertSurface(preop, preop->format, 0);
-    atlas = SDL_CreateTextureFromSurface(renderer, oped);
-    SDL_FreeSurface(preop);
-    SDL_FreeSurface(oped); 
 }
