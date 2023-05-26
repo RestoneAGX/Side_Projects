@@ -25,14 +25,19 @@ int main(int argc, char** argv){
    // loadTextures(renderer);
 
     int pInput[] = {0,0};
-    int gameActive = 1;
+    int gameState = 1;
     SDL_Event event;
 
     // TODO: When setting the stage set the current world size as well
-    while (gameActive){
-        handleInput(&event, &gameActive, pInput);
-        UpdateWorld();
-        //RenderWorld(renderer);
+    while (gameState){
+        handleInput(&event, &gameState, pInput);
+        if (gameState == ACTIVE){
+            UpdateWorld();
+            RenderWorld(renderer);
+        } else {
+            UpdateUI(gameState);
+            RenderUI(renderer);
+        }
     }
 
     SDL_DestroyTexture(atlas);

@@ -27,6 +27,12 @@ enum Entities{
     Kɔbe
 };
 
+enum GameStates{
+    QUIT,
+    ACTIVE,
+    PAUSED,
+};
+
 // Tools
 #define bounds_check(pos1,pos2)( !(pos1.x < pos2.x || pos1.x + pos1.w > pos2.x + pos2.w || pos1.y < pos2.y ||  pos1.y + pos1.h > pos2.y + pos2.h) )
 #define dist(spriteA, spriteB) (sqrt(                               \
@@ -74,7 +80,7 @@ void loadTextures(SDL_Renderer* renderer){
 void handleInput(SDL_Event *event, int* gameActive, int* input){
     while(SDL_PollEvent(event)){
         switch(event->type){
-            case SDL_QUIT: *gameActive = 0;
+            case SDL_QUIT: *gameActive = QUIT;
             break;
 
             case SDL_MOUSEBUTTONDOWN:
@@ -102,6 +108,9 @@ void handleInput(SDL_Event *event, int* gameActive, int* input){
                     case SDL_SCANCODE_S: input[1] = -1;
                     break;
                     case SDL_SCANCODE_SPACE: Shoot(plr, Banana);
+                    break;
+                    case SDL_SCANCODE_ESCAPE:
+                    *gameState = (ACTIVE) ? PAUSED : ACTIVE;
                     break;
                     default: break;
                 }
