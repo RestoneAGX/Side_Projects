@@ -7,23 +7,21 @@ import (
 	"github.com/maxence-charriere/go-app/v9/pkg/app"
 )
 
-
-
-type hello struct{
+type hello struct {
 	app.Compo
 }
 
-func (h* hello) Render() app.UI {
-	return app.H1().Text("Hello World")
+func (h *hello) Render() app.UI {
+	return app.Img().Src("/web/resources/Map.PNG")
 }
 
-func main(){
+func main() {
 	app.Route("/", &hello{})
 
 	go app.RunWhenOnBrowser()
 
-	http.Handle("/", &app.Handler {
-		Name: "Hello",
+	http.Handle("/", &app.Handler{
+		Name:        "Hello",
 		Description: "",
 	})
 
