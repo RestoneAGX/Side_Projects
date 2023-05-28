@@ -1,6 +1,5 @@
-#include<stdio.h>
-#include<SDL2/SDL.h>
-#include"libs/player.h"
+#include"libs/UI.h"
+#include"libs/Systems.h"
 
 #define WIN_HEIGHT 680
 #define WIN_WIDTH 1048
@@ -22,22 +21,27 @@ int main(int argc, char** argv){
         return printf("Error Creating Renderer: %s\n", SDL_GetError());
     }
 
-   // loadTextures(renderer);
+    loadTextures(renderer);
 
-    int pInput[] = {0,0};
-    int gameState = 1;
+    int pInput = 0;
+    int gameState = ACTIVE;
     SDL_Event event;
 
     // TODO: When setting the stage set the current world size as well
     while (gameState){
-        handleInput(&event, &gameState, pInput);
+        SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
+        SDL_RenderClear(renderer);
+        handleInput(&event, &gameState, &pInput);
         if (gameState == ACTIVE){
+            handlePlayerMovement(&pInput);
             UpdateWorld();
             RenderWorld(renderer);
         } else {
-            UpdateUI(gameState);
+            UpdateUI(&gameState);
             RenderUI(renderer);
         }
+
+        SDL_RenderPresent(renderer);
     }
 
     SDL_DestroyTexture(atlas);
