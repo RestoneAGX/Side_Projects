@@ -24,17 +24,21 @@ int main(int argc, char** argv){
     loadTextures(renderer);
 
     int pInput = 0;
-    int gameState = ACTIVE;
+    int gameState = ACTIVE, menuState = NORMAL;
     SDL_Event event;
 
-    // TODO: When setting the stage set the current world size as well
+    world[1].components[ANIMATION] = ATK;
+
     while (gameState){
         SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
         SDL_RenderClear(renderer);
+
         handleInput(&event, &gameState, &pInput);
+        
         if (gameState == ACTIVE){
             handlePlayerMovement(&pInput);
-            UpdateWorld();
+            UpdateWorld(&gameState, &menuState);
+            printf("HP: %d\n", (int)world[0].components[HP]);
             RenderWorld(renderer);
         } else {
             UpdateUI(&gameState);

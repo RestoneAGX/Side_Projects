@@ -63,3 +63,9 @@
 - [] Tuning Player Movement
 - [] Adjusting Spawn locations
 - [] Making the Pause Menu
+
+## TODAY:
+- Now able to load other sprites besides Diddy
+- Tuned jumping and move speed
+- Timer Bug fixed & timers now functional
+- Damage handling tested and functional

@@ -1,25 +1,18 @@
 #include"Systems.h"
 
-enum GameStates{
-    QUIT,
-    ACTIVE,
-    PAUSED,
-};
-
 float calcVel = 0;
 
 void handlePlayerMovement(int* input){
-    if ( world[0].components[SPEED] ) calcVel += 0.01;
+    if ( world[0].components[SPEED] ) calcVel += 0.0005;
 
-    world[plr].pos.x += input[0] * 0.2;
+    world[plr].pos.x += input[0] * 0.05;
     world[plr].pos.y -= calcVel;
     
-    if ( calcVel > 2){
+    if ( calcVel > 0.5){
         calcVel = 0;
         world[0].components[SPEED] = 0;
     }
-    
-    printf("Calc Vel: %f\n", calcVel);
+    // printf("Calc Vel: %f\n", calcVel);
 }
 
 void handleInput(SDL_Event *event, int* gameState, int* input){
@@ -29,8 +22,9 @@ void handleInput(SDL_Event *event, int* gameState, int* input){
             break;
 
             case SDL_MOUSEBUTTONDOWN: 
-                if(event->button.button == SDL_BUTTON_LEFT) Shoot(plr, Kɔbe);
-                else world[0].components[SPEED] = 1;
+                if(event->button.button == SDL_BUTTON_LEFT){
+                    if (world[plr].timer[0] == 0)Shoot(plr, DK); // DEBUG: replace with Kɔbe
+                } else world[0].components[SPEED] = 1;
             break;
 
             case SDL_KEYDOWN:
