@@ -71,19 +71,21 @@ Entity presets[19] = {
 };
 
 void Shoot(int caller, int idx){
+    printf("Spawned object\n");
     world[current_world_size] = presets[idx-1];
     world[current_world_size].pos = world[caller].pos;
     world[current_world_size].components[FLIPPED] = world[caller].components[FLIPPED]; //TODO: might change speed flipped to + & - speeds
     world[current_world_size].timer[SPECIAL-1] = SDL_GetTicks();
     world[current_world_size++].pos.x += world[caller].components[FLIPPED] * 10;
     world[caller].timer[0] = SDL_GetTicks();
-    printf("Spawned object");
 }
 
 void UpdateTimers(int i){
     for (int x = 0; x < TIMER_MAX; x++){
-        if (world[i].timer[x] > 0 && (float) ((SDL_GetTicks() - world[i].timer[x])) / 1000 >= timerMax[x])
+        if (world[i].timer[x] > 0 && (float) ((SDL_GetTicks() - world[i].timer[x])) / 1000 >= timerMax[x]){
             world[i].timer[x] = 0;
+            printf("Timer Cleared for : %d, current_world_size: %d\n", i, current_world_size);
+        }
     }
 }
 
@@ -97,7 +99,6 @@ void handleAI(int caller){
                 case ATK: world[caller].components[ANIMATION] = ATK;
                     break;
                 case SPECIAL:
-                          continue;
                     switch(world[caller].id){
                         case plr: break;
                         case DK:
@@ -132,7 +133,8 @@ void Die(int idx, int* gameState, int* menuState){
     if (world[idx].id == plr){
         *gameState = PAUSED;
         *menuState = GAME_OVER;
-    } else world[idx] = world[current_world_size--]; 
+    } else world[idx] = world[current_world_size--];
+    printf("Someone Died\n");
 }
 
 void UpdateWorld(int* gameState, int* menuState){
