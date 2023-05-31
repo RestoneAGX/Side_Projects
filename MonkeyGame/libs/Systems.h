@@ -77,7 +77,7 @@ void Shoot(int caller, int idx){
     world[current_world_size].components[FLIPPED] = world[caller].components[FLIPPED]; //TODO: might change speed flipped to + & - speeds
     
     world[current_world_size].timer[SHOOT-1] = 0xFFFFFFFF;
-    world[current_world_size].timer[ATK-1] = 0xFFFFFFFF;
+    world[current_world_size].timer[ATK-1]   = 0xFFFFFFFF;
     world[current_world_size].timer[SPECIAL-1] = SDL_GetTicks();
     
     world[current_world_size++].pos.x += world[caller].components[FLIPPED] * 10;
