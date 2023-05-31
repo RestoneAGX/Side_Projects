@@ -23,7 +23,8 @@ void handleInput(SDL_Event *event, int* gameState, int* input){
 
             case SDL_MOUSEBUTTONDOWN: 
                 if(event->button.button == SDL_BUTTON_LEFT){
-                    Shoot(plr, DK); // DEBUG: replace with Kɔbe
+                    if(world[0].timer[0] == 0)
+                        Shoot(plr, DK); // DEBUG: replace with Kɔbe
                 } else world[0].components[DAMAGE] = 1;
             break;
 

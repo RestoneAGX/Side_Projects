@@ -57,7 +57,7 @@ typedef struct Entity{
     Uint32 timer[TIMER_MAX];
 }Entity;
 
-float timerMax[TIMER_MAX] = {2.5, 0.5, 1}; // NOTE: Adjust these values
+float timerMax[TIMER_MAX] = {1, 1.2, 1}; // NOTE: Adjust these values
 int current_world_size = 1;
 
 Entity world[50] = {
@@ -75,23 +75,51 @@ void Shoot(int caller, int idx){
     world[current_world_size] = presets[idx-1];
     world[current_world_size].pos = world[caller].pos;
     world[current_world_size].components[FLIPPED] = world[caller].components[FLIPPED]; //TODO: might change speed flipped to + & - speeds
+    
+    world[current_world_size].timer[SHOOT-1] = 0xFFFFFFFF;
+    world[current_world_size].timer[ATK-1] = 0xFFFFFFFF;
     world[current_world_size].timer[SPECIAL-1] = SDL_GetTicks();
+    
     world[current_world_size++].pos.x += world[caller].components[FLIPPED] * 10;
     world[caller].timer[0] = SDL_GetTicks();
 }
 
 void UpdateTimers(int i){
     for (int x = 0; x < TIMER_MAX; x++){
-        if (world[i].timer[x] > 0 && (float) ((SDL_GetTicks() - world[i].timer[x])) / 1000 >= timerMax[x]){
+        if (world[i].timer[x] > 0 && world[i].timer[x] < 0xFFFFFFFF && (float) ((SDL_GetTicks() - world[i].timer[x])) / 1000 >= timerMax[x]){
             world[i].timer[x] = 0;
-            printf("Timer Cleared for : %d, current_world_size: %d\n", i, current_world_size);
+            printf("Timer %d Cleared for : %d, current_world_size: %d\n", x, i, current_world_size);
         }
     }
 }
 
+void handleAIMovement(int caller){
+    switch(world[caller].id){
+        case plr: break;
+        /*
+        case DK: 
+            switch(world[caller].components[ANIMATION]){
+                case IDLE:
+                break;
+                case ATK:
+                break;
+                case SPECIAL:
+                break;
+            }
+            break;
+        */
+        case Kranky: break;
+        case Drake: break;
+        default: world[caller].pos.x += 0.25 * world[caller].components[FLIPPED];
+            break;
+    }
+}
+
 void handleAI(int caller){
+    if (caller == plr) return;
+
     for (int i = 0; i < TIMER_MAX; i++){
-        if (!world[caller].timer[i]){
+        if (world[caller].timer[i] == 0){
             world[caller].timer[i] = SDL_GetTicks();
             switch(i+1){
                 case SHOOT: // Shoot(caller, 0); //TODO: find a system for monkey specific projectile ids
@@ -100,9 +128,7 @@ void handleAI(int caller){
                     break;
                 case SPECIAL:
                     switch(world[caller].id){
-                        case plr: break;
-                        case DK:
-                            break;
+                        //case DK: break;  //DEBUG: Re-enable
                         case Kranky:
                             break;
                         case Leo:
@@ -118,32 +144,11 @@ void handleAI(int caller){
     }
 }
 
-void handleAIMovement(int caller){
-    switch(world[caller].id){
-        case plr: break;
-        case DK: 
-            switch(world[caller].components[ANIMATION]){
-                case IDLE:
-                break;
-                case ATK:
-                break;
-                case SPECIAL:
-                break;
-            }
-            break;
-        case Kranky: break;
-        case Drake: break;
-        default: world[caller].pos.x += 0.25 * world[caller].components[FLIPPED];
-            break;
-    }
-}
-
 void Die(int idx, int* gameState, int* menuState){
     if (world[idx].id == plr){
         *gameState = PAUSED;
         *menuState = GAME_OVER;
     } else world[idx] = world[current_world_size--];
-    printf("Someone Died\n");
 }
 
 void UpdateWorld(int* gameState, int* menuState){
@@ -165,7 +170,7 @@ void UpdateWorld(int* gameState, int* menuState){
         for (int x = i+1; x < current_world_size; x++){
             if ( bounds_check(world[i].pos, world[x].pos) && world[x].components[ANIMATION] == ATK ){
                 world[i].components[HP] -= world[x].components[DAMAGE];
-                if (world[i].components[HP] < 0) Die(i, gameState, menuState);
+                if (world[i].components[HP] < 0 || world[i].id > Drake) Die(i, gameState, menuState);
             }
         }
     }
