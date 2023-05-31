@@ -38,7 +38,6 @@ int main(int argc, char** argv){
         if (gameState == ACTIVE){
             handlePlayerMovement(&pInput);
             UpdateWorld(&gameState, &menuState);
-            printf("HP: %d\n", (int)world[0].components[HP]);
             RenderWorld(renderer);
         } else {
             UpdateUI(&gameState);
