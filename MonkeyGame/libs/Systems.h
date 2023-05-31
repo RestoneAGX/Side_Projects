@@ -121,7 +121,16 @@ void handleAI(int caller){
 void handleAIMovement(int caller){
     switch(world[caller].id){
         case plr: break;
-        //case DK: break;
+        case DK: 
+            switch(world[caller].components[ANIMATION]){
+                case IDLE:
+                break;
+                case ATK:
+                break;
+                case SPECIAL:
+                break;
+            }
+            break;
         case Kranky: break;
         case Drake: break;
         default: world[caller].pos.x += 0.25 * world[caller].components[FLIPPED];
