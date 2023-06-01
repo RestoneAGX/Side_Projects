@@ -1,0 +1,30 @@
+MoveTowards player{
+if ( |x2-(x1+speed)| < stoppingDistancen)
+add to x, in current direiction
+}
+
+DashTowardsPlayer(){
+turn on dashing utnil next timer flip
+speed = (speed == dashSpeed) ? speed : dashSpeed;
+}
+
+//called during timerfliip
+BackAndForth(){
+Move in 1 direction until timer flip
+flipped *= -1;
+}
+
+KrankyShoot(x,y){
+shoot with shootY - y
+}
+
+TriangleMove(){ // add a check for it has been run
+// When moving left and right, mark cycle complete
+addd to pos depending on the next checkpoint
+ switch(nxtPoint){
+   //Adjust y multiplier based on next point, once, we've repeat the trianagle pattern, mark the cycle var
+   case 0:
+   case 1:
+   case 2:
+ }
+}

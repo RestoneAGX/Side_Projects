@@ -93,23 +93,25 @@ void UpdateTimers(int i){
     }
 }
 
+//DEBUG: Test 0.1 
+#define AI_MOVE_SPEED 0.1
+// DEBUG: 10e
+#define AI_STOPPING_DIST 10
+
 void handleAIMovement(int caller){
     switch(world[caller].id){
         case plr: break;
-        /*
-        case DK: 
-            switch(world[caller].components[ANIMATION]){
-                case IDLE:
-                break;
-                case ATK:
-                break;
-                case SPECIAL:
-                break;
-            }
+        case DK:
+            world[caller].pos.x += AI_MOVE_SPEED * world[caller].components[FLIPPED]; 
+            if (abs(world[0].pos.x - world[caller].pos.x) < AI_STOPPING_DIST)
+                world[caller].pos.x -= AI_MOVE_SPEED * world[caller].components[FLIPPED];
             break;
-        */
-        case Kranky: break;
-        case Drake: break;
+        case Kranky: world[caller].pos.x += AI_MOVE_SPEED * world[caller].components[FLIPPED];
+            break;
+        case Leo: break;
+        case Drake: world[caller].pos.x += AI_MOVE_SPEED * world[caller].components[FLIPPED];
+            world[caller].pos.y += AI_MOVE_SPEED * world[caller].components[ANIMATION];
+            break;
         default: world[caller].pos.x += 0.25 * world[caller].components[FLIPPED];
             break;
     }
@@ -122,20 +124,23 @@ void handleAI(int caller){
         if (world[caller].timer[i] == 0){
             world[caller].timer[i] = SDL_GetTicks();
             switch(i+1){
-                case SHOOT: // Shoot(caller, 0); //TODO: find a system for monkey specific projectile ids
+                case SHOOT: 
+                    Shoot(caller, 0); //REPLACE: 0 with a value based on the id of the caller exa: caller.id + Drake
+                    if (world[caller].id == Kranky)
+                        world[current_world_size-1].pos.y -= 10; // REPLACE: 10 after tuning
                     break;
                 case ATK: world[caller].components[ANIMATION] = ATK;
                     break;
                 case SPECIAL:
                     switch(world[caller].id){
                         //case DK: break;  //DEBUG: Re-enable
-                        case Kranky:
+                        case Kranky: world[caller].components[FLIPPED] *= -1;
                             break;
                         case Leo:
                             break;
                         case Drake:
                             break;
-                        default: world[caller] = world[current_world_size--]; // Delete 
+                        default: world[caller] = world[current_world_size--]; // Delete Obj
                             break;
                     }
                     break;

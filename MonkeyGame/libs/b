@@ -1,0 +1,29 @@
+TODO:
+- Hanlding AI {
+-> walking and general scripted travel
+-> Shooting different projectiles based on IDs
+-> Adding special abilities
+}
+- Setting up background
+- Audio cues
+
+- Drake {
+-> Spawning 21 savages that do damage when touched
+-> His ass checkes spawn sound waves that can cover a specific amount of the screen
+-> Cover the lower part then the upper part
+}
+
+Movement{
+DK
+- Walk towards player
+- Dash towards the player
+- Shoot
+Kranky:
+- GoKart back and forth
+- Jump and throw cane
+Leo
+- Stay on the left and keep throwing stuff
+Drake:
+- Move in a triangle
+- Move left and right and drop waves
+}   
