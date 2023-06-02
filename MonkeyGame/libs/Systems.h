@@ -17,7 +17,6 @@ enum Components{
     ANIMATION,
     FLIPPED,
     DAMAGE,
-    GRAVITY,
 };
 
 enum AnimationTypes{
@@ -34,20 +33,24 @@ enum Entities{
     Leo,
     Drake,
     Kɔbe,
+    Banana,
     Kane,
-    Lightning,
     Bottle,
+    Wave,
+    Lightning,
+    TwentyOne,
 };
 
 // Constants
-#define COMPONENT_MAX 6
+#define COMPONENT_MAX 4
 #define TIMER_MAX 3
-#define Gravity 0.1
 
 // Tools
 #define bounds_check(pos1,pos2)( !(pos1.x < pos2.x || pos1.x + pos1.w > pos2.x || pos1.y < pos2.y ||  pos1.y + pos1.h > pos2.y) )
 
-#define entity(i, xOff, state, hp, flip, dmg, grav)( (Entity) {.id = i, .pos = (SDL_FRect) {.x = xOff, .y = 580, .w = 90, .h = 120}, .src = &(SDL_Rect){.x=i*4*600, .y=0, .w=600, .h =800}, .timer = {0,0,0}, .components = {hp, state, flip, dmg, grav}} )
+#define entity(i, xOff, state, hp, flip, dmg)( (Entity) {.id = i, .pos = (SDL_FRect) {.x = xOff, .y = 580, .w = 90, .h = 120}, .src = &(SDL_Rect){.x=i*4*600, .y=0, .w=600, .h =800}, .timer = {0,0,0}, .components = {hp, state, flip, dmg}} )
+#define entityP(i, xOff, state, hp, flip, dmg)( (Entity) {.id = i, .pos = (SDL_FRect) {.x = xOff, .y = 580, .w = 90, .h = 120}, .src = &(SDL_Rect){.x=i*4*600, .y=0, .w=600, .h =800}, .timer = {0xFFFFFFFF, 0xFFFFFFFF, 0}, .components = {hp, state, flip, dmg}} )
+
 
 typedef struct Entity{
     unsigned char id;
@@ -61,25 +64,26 @@ float timerMax[TIMER_MAX] = {1, 1.2, 5}; // NOTE: Adjust these values
 int current_world_size = 2;
 
 Entity world[50] = {
-    // ID, State, HP, Flip, Damage, Gravity
-    entity(plr, 50, IDLE, 3, 1, 1, 1),
-    entity(Leo, 1000, ATK, 25, -1, 1, 1),
+    // ID, x Offset, State, HP, Flip, Damage
+    entity(plr, 50, IDLE, 3, 1, 1),
+    entity(Leo, 1000, ATK, 25, -1, 1),
 };
 
-Entity presets[19] = {
-    entity(DK, 1000, ATK, 1, 0, 1, 0), // DEBUG
+Entity preset[2] = {
+    entity(1, 1000, 25, -1, 1), // Boss preset
+    entityP(2, 0, 1, 0, 1),     // Projectile preset
 };
 
 void Shoot(int caller, int idx){
-    world[current_world_size] = presets[idx-1];
+    world[current_world_size] = preset[1];
     world[current_world_size].pos = world[caller].pos;
-    world[current_world_size].components[FLIPPED] = world[caller].components[FLIPPED]; //TODO: might change speed flipped to + & - speeds
+    world[current_world_size].pos.x += world[caller].components[FLIPPED] * 10;
+    world[current_world_size].components[FLIPPED] = world[caller].components[FLIPPED];
     
     world[current_world_size].timer[SHOOT-1] = 0xFFFFFFFF;
     world[current_world_size].timer[ATK-1]   = 0xFFFFFFFF;
-    world[current_world_size].timer[SPECIAL-1] = SDL_GetTicks();
+    world[current_world_size++].timer[SPECIAL-1] = SDL_GetTicks();
     
-    world[current_world_size++].pos.x += world[caller].components[FLIPPED] * 10;
     world[caller].timer[0] = SDL_GetTicks();
 }
 
@@ -124,8 +128,8 @@ void handleAI(int caller){
             world[caller].timer[i] = SDL_GetTicks();
             switch(i+1){
                 case SHOOT: 
-                    Shoot(caller, 1); //REPLACE: 0 with a value based on the id of the caller exa: caller.id + Drake
-                    if (world[caller].id == Kranky) world[current_world_size-1].pos.y -= 100; // REPLACE: 10 after tuning
+                    Shoot(caller, world[caller].id + Drake + 1);
+                    if (world[caller].id == Kranky) world[current_world_size-1].pos.y -= 100;
                     break;
                 case ATK: world[caller].components[ANIMATION] = ATK;
                     switch(world[caller].id){
@@ -137,14 +141,14 @@ void handleAI(int caller){
                     break;
                 case SPECIAL:
                     switch(world[caller].id){
-                        case DK: break;  //DEBUG: Re-enable
+                        case DK: break;
                         case Kranky: world[caller].components[FLIPPED] *= -1;
                             break;
-                        case Leo: Shoot(caller, 0); //REPLACE 0 with leo's lightning 
+                        case Leo: Shoot(caller, Lightning);
                             break;
-                        case Drake:
+                        case Drake: Shoot(caller, TwentyOne)
                             break;
-                        default: world[caller] = world[current_world_size--]; // Delete Obj
+                        default: world[caller] = world[current_world_size--]; // Deletes the projectile
                             break;
                     }
                     break;
@@ -162,7 +166,6 @@ void Die(int idx, int* gameState, int* menuState){
 
 void UpdateWorld(int* gameState, int* menuState){
     for (int i = 0; i < current_world_size; i++){
-        world[i].pos.y += (world[i].components[GRAVITY]) * Gravity;
         
         // Handle Collision
         if (world[i].pos.x < 0)                  world[i].pos.x = 0;

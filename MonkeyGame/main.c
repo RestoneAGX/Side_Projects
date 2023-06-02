@@ -1,4 +1,4 @@
-#include"libs/UI.h"
+#include"libs/Rendering.h"
 #include"libs/Systems.h"
 
 #define WIN_HEIGHT 680
@@ -27,22 +27,15 @@ int main(int argc, char** argv){
     int gameState = ACTIVE, menuState = NORMAL;
     SDL_Event event;
 
-    world[1].components[ANIMATION] = ATK;
-
     while (gameState){
         SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
         SDL_RenderClear(renderer);
 
         handleInput(&event, &gameState, &pInput);
-        
-        if (gameState == ACTIVE){
-            handlePlayerMovement(&pInput);
-            UpdateWorld(&gameState, &menuState);
-            RenderWorld(renderer);
-        } else {
-            UpdateUI(&gameState);
-            RenderUI(renderer);
-        }
+        handlePlayerMovement(&pInput);
+
+        UpdateWorld(&gameState, &menuState);
+        RenderWorld(renderer);
 
         SDL_RenderPresent(renderer);
     }
