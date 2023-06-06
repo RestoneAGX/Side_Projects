@@ -19,12 +19,11 @@ void handlePlayerMovement(int* input){
     // printf("Calc Vel: %f\n", calcVel);
 }
 
-void SetStage(int enemy){
+void SetStage(unsigned char enemy){
     current_world_size = 2;
-    world[1] = preset[0];
-    world[1].id = enemy;
-    world[1].pos.x = 1000;
-    world[1].pos.y = 560;
+
+    world[1] = (Entity){.id = enemy, .components = {25, ATK, -1, 1}, .src = srcs+(int)enemy, .pos = {.x = 1000, .y = 560, .w = 90, .h = 120}, .timer = {0,0,0}};
+    printf("Boss ID: %d\n", world[1].id);
 
     world[plr].pos.x = 50;
     world[plr].pos.y = 560;
@@ -38,7 +37,12 @@ void handleInput(SDL_Event *event, int* gameState, int* input){
 
             case SDL_MOUSEBUTTONDOWN: 
                 if(event->button.button == SDL_BUTTON_LEFT){
-                    if(world[0].timer[0] == 0) Shoot(plr, DK); // DEBUG: replace with Kɔbe
+                    if(world[0].timer[0] == 0){
+                        int x, y;
+                        SDL_GetMouseState(&x, &y);
+                        char isFlipped = (((int)(world[plr].pos.x - (float)x)) & (1 << 31)) >> 31;
+                        Shoot( plr, Kɔbe, (isFlipped) ? 1 : -1);
+                    }
                 } else world[0].components[DAMAGE] = 1;
             break;
 
@@ -50,13 +54,18 @@ void handleInput(SDL_Event *event, int* gameState, int* input){
                     case SDL_SCANCODE_D: input[0] = 1;
                         world[plr].components[FLIPPED] = 1;
                     break;
-                    case SDL_SCANCODE_0: SetStage(DK);
+                    case SDL_SCANCODE_SPACE:
+                        if(world[0].timer[0] == 0){
+                            Shoot(plr, Kɔbe, world[plr].components[FLIPPED]);
+                        }
                     break;
-                    case SDL_SCANCODE_1: SetStage(Kranky);
+                    case SDL_SCANCODE_1: SetStage(DK);
                     break;
-                    case SDL_SCANCODE_2: SetStage(Leo);
+                    case SDL_SCANCODE_2: SetStage(Kranky);
                     break;
-                    case SDL_SCANCODE_3: SetStage(Drake);
+                    case SDL_SCANCODE_3: SetStage(Leo);
+                    break;
+                    case SDL_SCANCODE_4: SetStage(Drake);
                     break;
                     default: break;
                 }

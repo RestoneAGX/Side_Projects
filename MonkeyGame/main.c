@@ -28,7 +28,7 @@ int main(int argc, char** argv){
     SDL_Event event;
 
     while (gameState){
-        SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
         SDL_RenderClear(renderer);
 
         handleInput(&event, &gameState, &pInput);
@@ -43,5 +43,6 @@ int main(int argc, char** argv){
     SDL_DestroyTexture(atlas);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+
     return 0;
 }

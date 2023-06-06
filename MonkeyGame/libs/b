@@ -26,4 +26,11 @@ Leo
 Drake:
 - Move in a triangle
 - Move left and right and drop waves
-}   
+}
+
+TBD:
+- Shooting in the direction of the player
+- Moving in the direction of the player
+- Testing Triangle motion
+- Testing enemy and player death
+- Switching who's spawning

@@ -35,7 +35,7 @@ clean:
 
 %_:
 	zig cc -o $@ main.c $(ARGS) $(LDFLAGS)
-# 	./$@$(EXTENSION)
+	./$@$(EXTENSION)
 
 # %_:
 # 	gcc cc -o $@ main.c $(ARGS) $(LDFLAGS)
